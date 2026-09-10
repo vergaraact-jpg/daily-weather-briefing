@@ -1,14 +1,15 @@
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const NTFY_TOPIC = process.env.NTFY_TOPIC;
 
+// Coordenadas de Madrid
 const LAT = 40.4168;
 const LON = -3.7038;
 
 async function run() {
-  if (!GEMINI_API_KEY) throw new Error("Falta el secreto GEMINI_API_KEY");
-  if (!NTFY_TOPIC) throw new Error("Falta el secreto NTFY_TOPIC");
+  if (!GEMINI_API_KEY) throw new Error("Falta el secreto GEMINI_API_KEY en GitHub");
+  if (!NTFY_TOPIC) throw new Error("Falta el secreto NTFY_TOPIC en GitHub");
 
-  // 1. Clima Open-Meteo
+  // 1. Obtener clima de Open-Meteo
   const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max&current_weather=true&timezone=auto`;
   const wRes = await fetch(weatherUrl);
   if (!wRes.ok) throw new Error(`Fallo Open-Meteo: ${wRes.status}`);
@@ -19,7 +20,7 @@ async function run() {
   const uvMax = wData.daily.uv_index_max[0];
   const wind = wData.current_weather.windspeed;
 
-  // 2. Consulta a Gemini
+  // 2. Consulta a Gemini con el modelo activo gemini-3.6-flash
   const prompt = `Analiza estos datos meteorologicos en Madrid:
 - Temp actual: ${currentTemp} C
 - Prob. lluvia: ${rainProb}%
@@ -28,7 +29,7 @@ async function run() {
 
 Devuelve EXACTAMENTE una frase directa de maximo 80 caracteres para una notificacion matutina movil diciendo que ponerse o que llevar hoy. Sin comillas ni texto extra.`;
 
-  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${GEMINI_API_KEY}`;
 
   const gRes = await fetch(geminiUrl, {
     method: "POST",
@@ -44,7 +45,7 @@ Devuelve EXACTAMENTE una frase directa de maximo 80 caracteres para una notifica
   const gData = await gRes.json();
   const consejo = gData.candidates[0].content.parts[0].text.trim();
 
-  // 3. Envio a ntfy (Cabeceras estrictamente ASCII para evitar ByteString error)
+  // 3. Envio a ntfy (cabeceras ASCII sin caracteres especiales)
   const pushRes = await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
     method: "POST",
     body: consejo,
@@ -56,10 +57,10 @@ Devuelve EXACTAMENTE una frase directa de maximo 80 caracteres para una notifica
   });
 
   if (!pushRes.ok) throw new Error(`Fallo ntfy: ${pushRes.status}`);
-  console.log("Notificación despachada con éxito:", consejo);
+  console.log("Notificacion despachada con exito:", consejo);
 }
 
 run().catch((err) => {
-  console.error("Error en la ejecución:", err.message);
+  console.error("Error en la ejecucion:", err.message);
   process.exit(1);
 });
