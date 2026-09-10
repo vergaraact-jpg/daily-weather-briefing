@@ -1,0 +1,92 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+
+body {
+  background-color: #0f172a;
+  color: #f8fafc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+.app-card {
+  background: #1e293b;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.tag { font-size: 0.75rem; letter-spacing: 1px; color: #94a3b8; }
+.temp { font-size: 2.5rem; font-weight: 700; margin-top: 0.25rem; }
+
+.alert-box {
+  background: #334155;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  border-left: 4px solid #38bdf8;
+}
+
+.section h3 { font-size: 0.85rem; text-transform: uppercase; color: #94a3b8; margin-bottom: 0.5rem; }
+
+.items-list { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.items-list li {
+  background: #0f172a;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+.palette-container { display: flex; height: 35px; border-radius: 8px; overflow: hidden; }
+.swatch { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.6); }
+
+.config-footer { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+.config-footer input {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.model-select-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.model-select-group select {
+  flex: 1;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+#btn-detect-models {
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background: #1e293b;
+  color: #fff;
+  cursor: pointer;
+}
+
+.config-footer button#btn-update {
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: none;
+  background: #38bdf8;
+  color: #0f172a;
+  font-weight: 600;
+  cursor: pointer;
+}

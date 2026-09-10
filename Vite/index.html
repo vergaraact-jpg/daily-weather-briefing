@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Outfit & Weather Briefing</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+</head>
+<body>
+  <main class="app-card">
+    <header class="header">
+      <span class="tag">REPORTE MATUTINO</span>
+      <h1 id="city-title">Madrid</h1>
+      <p id="temp-display" class="temp">--°C</p>
+    </header>
+
+    <section class="alert-box" id="alert-box">
+      <p id="alert-text">Cargando pronóstico...</p>
+    </section>
+
+    <section class="section">
+      <h3>Qué llevar hoy</h3>
+      <ul id="items-list" class="items-list">
+        <li>Pendiente de análisis...</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h3>Paleta de luz del día</h3>
+      <div id="palette-container" class="palette-container"></div>
+    </section>
+
+    <div class="config-footer">
+      <input type="password" id="api-key" placeholder="Pega tu Gemini API Key">
+      
+      <div class="model-select-group">
+        <select id="model-select">
+          <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+          <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+          <option value="gemini-1.5-flash-latest">gemini-1.5-flash-latest</option>
+          <option value="gemini-pro">gemini-pro</option>
+        </select>
+        <button id="btn-detect-models" type="button" title="Detectar modelos disponibles">🔍</button>
+      </div>
+
+      <button id="btn-update">Actualizar reporte</button>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
