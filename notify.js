@@ -8,7 +8,7 @@ async function run() {
   if (!GEMINI_API_KEY) throw new Error("Falta el secreto GEMINI_API_KEY");
   if (!NTFY_TOPIC) throw new Error("Falta el secreto NTFY_TOPIC");
 
-  // 1. Obtener clima
+  // 1. Clima Open-Meteo
   const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max&current_weather=true&timezone=auto`;
   const wRes = await fetch(weatherUrl);
   if (!wRes.ok) throw new Error(`Fallo Open-Meteo: ${wRes.status}`);
@@ -19,16 +19,16 @@ async function run() {
   const uvMax = wData.daily.uv_index_max[0];
   const wind = wData.current_weather.windspeed;
 
-  // 2. Generar consejo con gemini-3.6-flash
-  const prompt = `Analiza estos datos meteorológicos en Madrid:
-- Temp actual: ${currentTemp}°C
+  // 2. Consulta a Gemini
+  const prompt = `Analiza estos datos meteorologicos en Madrid:
+- Temp actual: ${currentTemp} C
 - Prob. lluvia: ${rainProb}%
-- UV máx: ${uvMax}
+- UV max: ${uvMax}
 - Viento: ${wind} km/h
 
-Devuelve EXACTAMENTE una frase directa de máximo 80 caracteres para una notificación matutina móvil diciendo qué ponerse o qué llevar hoy. Sé concisa y práctica. Sin comillas ni texto extra.`;
+Devuelve EXACTAMENTE una frase directa de maximo 80 caracteres para una notificacion matutina movil diciendo que ponerse o que llevar hoy. Sin comillas ni texto extra.`;
 
-  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${GEMINI_API_KEY}`;
+  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
   const gRes = await fetch(geminiUrl, {
     method: "POST",
@@ -44,12 +44,12 @@ Devuelve EXACTAMENTE una frase directa de máximo 80 caracteres para una notific
   const gData = await gRes.json();
   const consejo = gData.candidates[0].content.parts[0].text.trim();
 
-  // 3. Enviar notificación push
+  // 3. Envio a ntfy (Cabeceras estrictamente ASCII para evitar ByteString error)
   const pushRes = await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
     method: "POST",
     body: consejo,
     headers: {
-      "Title": `Madrid ${currentTemp}°C — Briefing de hoy`,
+      "Title": `Madrid ${currentTemp}C - Clima hoy`,
       "Priority": "high",
       "Tags": "partly_sunny"
     }
